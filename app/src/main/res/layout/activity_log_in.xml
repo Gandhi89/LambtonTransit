@@ -7,7 +7,9 @@
     android:orientation="vertical"
     tools:context=".LogInActivity">
 
-
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
@@ -21,15 +23,15 @@
             android:id="@+id/input_layout_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
             <EditText
-                android:id="@+id/input_name"
+                android:id="@+id/loginActivity_input_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-                android:hint="Name" />
+                android:hint="Student ID"
+                android:backgroundTint="@color/colorPrimary"/>
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -39,12 +41,6 @@
             android:textColorHint="#008080"
             app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
-            <EditText
-                android:id="@+id/input_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:hint="Email" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -54,21 +50,46 @@
             app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
             <EditText
-                android:id="@+id/input_password"
+                android:id="@+id/loginActivity_input_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                android:hint="Password"/>
+                android:hint="Password"
+                android:backgroundTint="@color/colorPrimary">
+
+
+            </EditText>
         </android.support.design.widget.TextInputLayout>
 
-        <Button android:id="@+id/btn_signup"
+
+        <Button
+            android:id="@+id/loginActivity_btn_login"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="signUp"
-            android:background="@color/colorPrimary"
             android:layout_marginTop="40dp"
-            android:textColor="@android:color/white"/>
+            android:background="#FF0000"
+            android:text="LogIn"
+            android:textColor="@android:color/white" />
+
+
+        <Button
+            android:id="@+id/loginActivity_btn_signup"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="#ffffff"
+            android:text="signUp"
+            android:textColor="@color/colorPrimary" />
+
+        <TextView
+            android:id="@+id/loginActivity_forgotPass"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="right"
+            android:gravity="center"
+            android:text="Forgot Password ?"/>
 
     </LinearLayout>
-
+</ScrollView>
 </LinearLayout>
