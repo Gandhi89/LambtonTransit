@@ -23,4 +23,8 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AnotherStyle">
+        <item name="android:textColor">#FF255F26</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>

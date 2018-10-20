@@ -12,8 +12,25 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
+
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 
 public class LogInActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -21,21 +38,17 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
     TextView forgotPass;
     Button logIn,signUp;
     String Password,StudentID;
-    String URL = "http://172.20.10.5/basic/user_info.php";
+    private String URL = "http://192.168.0.21/basic/user_info.php";
     boolean b = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
-
-
         getIDS();
         onClickListners();
 
-
-
-    }
+    }//end of onCreate()
 
     public void getIDS(){
 
@@ -65,21 +78,13 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
                 Password = password.getText().toString();
                 StudentID = studentID.getText().toString();
 
-                // Check Inputs are empty or not ?
+                // Check if inputs are empty or not
                 if(Password.isEmpty() || StudentID.isEmpty()){
-
                     Toast.makeText(this, "StudentID or Password empty.", Toast.LENGTH_SHORT).show();
-
                 }
-
-
                 else {
-
-                    new validateUser().execute();
-
+                    validateLogin();
                 }
-
-
                 break;
 
             case R.id.loginActivity_btn_signup:
@@ -99,65 +104,67 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-    class validateUser extends AsyncTask<Void,Void,Void> {
-        ProgressDialog pd;
+    private void validateLogin() {
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            pd = new ProgressDialog(LogInActivity.this);
-            pd.setTitle("Loading");
-            pd.setMessage("Please Wait");
-            pd.show();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-
-            ServiceClass serviceClass = new ServiceClass();
-            String result = serviceClass.getData(URL);
-            Log.e("wait what? :: ", "" + result);
-
-            try {
-                if (result != null) {
-                    Log.e("error before array", "dbh");
-                    JSONArray jsonArray = new JSONArray(result);
-                    Log.e("length of array", "" + jsonArray.length());
-                    for (int i = 0; i < jsonArray.length(); i++) {
-
-                        // Log.e("error after array", "dbh");
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        //int id = jsonObject.getInt(ID);
-                        String name = jsonObject.getString("student_email");
-                        String price = jsonObject.getString("password");
-                        Log.e("name:- ", name);
-                        if (name.equals(StudentID) && price.equals(Password)) {
-                            Log.e("Entered", "Entered");
-                            b = true;
-                        }
-
-
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request.Builder()
+                                    .url(URL)
+                                    .build();
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Request request, IOException e) {
+                      e.printStackTrace();
                     }
-                }
-            } catch (Exception e) {
 
-            }
-            return null;
-        }
+                    @Override
+                    public void onResponse(Response response) throws IOException {
+                      if (!response.isSuccessful())
+                      {
+                          throw new IOException("Unexpected code " + response);
+                      }
+                      else
+                      {
+                          final String result = response.body().string();
+                          Log.d("LoginActivity/result",result);
 
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            pd.dismiss();
-            if (b) {
-                Intent i = new Intent(LogInActivity.this, HomeScreenActivity.class);
-                i.putExtra("student_id", StudentID);
-                startActivity(i);
-            } else {
-                studentID.setText("");
-                password.setText("");
-                Toast.makeText(LogInActivity.this, "Credentials are wrong! Try again.", Toast.LENGTH_SHORT).show();
+                          try {
+
+                              // get data in jsonArray
+                              JSONArray jsonArray = new JSONArray(result);
+                              Log.d("LoginActivity/jsonObj","length : "+jsonArray.length());
+                              for (int i = 0; i < jsonArray.length(); i++){
+                                  JSONObject obj = jsonArray.getJSONObject(i);
+
+                                  // get student_id and pass for each object inside jsonArray
+                                  String student_id = obj.getString("student_id");
+                                  String pass = obj.getString("password");
+
+                                  if(studentID.getText().toString().equals(student_id) && password.getText().toString().equals(pass)){
+                                      runOnUiThread(new Runnable() {
+                                          @Override
+                                          public void run() {
+                                              Toast.makeText(LogInActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+                                              studentID.setText("");
+                                              password.setText("");
+                                              return;
+                                          }
+                                      });
+                                  }
+
+                              }
+                          } catch (JSONException e) {
+                              e.printStackTrace();
+                          }
+
+                      }
+                    }
+                });
             }
-        }
+        }).start();
+
     }
+
 }

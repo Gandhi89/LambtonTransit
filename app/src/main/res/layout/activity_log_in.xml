@@ -67,8 +67,9 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
-            android:background="#FF0000"
+            android:background="@drawable/rnd_red"
             android:text="LogIn"
+            android:elevation="20dp"
             android:textColor="@android:color/white" />
 
 
@@ -77,18 +78,22 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:background="#ffffff"
+            android:background="@drawable/rounded_edittext"
             android:text="signUp"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="#ffffff" />
 
         <TextView
             android:id="@+id/loginActivity_forgotPass"
             android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
             android:gravity="center"
+            style="@style/AnotherStyle"
             android:text="Forgot Password ?"/>
+
+
+
 
     </LinearLayout>
 </ScrollView>
