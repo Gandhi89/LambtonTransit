@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.shivamgandhi.lambtontransit.R;
 import com.example.shivamgandhi.lambtontransit.adapter.Adapter_HA_displayBusList;
@@ -30,6 +31,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     List<String> busName;
     List<String> busTiming;
     private  String getBus_towards_URL ="http://192.168.0.21/basic/bus_table_towards.php";
+    private  String getCurrentTime_URL ="http://worldclockapi.com/api/json/est/now";
     private  String getBus_away_URL ="http://192.168.0.21/basic/bus_table_away.php";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,14 +116,57 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.homeActivity_fromClg:
                 fromClgBtn.setBackgroundColor(Color.parseColor("#A76253"));
                 toClgBtn.setBackgroundColor(Color.parseColor("#ffffff"));
+                getCurrentTime();
                 getBusData_away();
                 break;
             case R.id.homeActivity_toClg:
                 toClgBtn.setBackgroundColor(Color.parseColor("#A76253"));
                 fromClgBtn.setBackgroundColor(Color.parseColor("#ffffff"));
+                getCurrentTime();
                 getBusData_towards();
                 break;
         }
+    }
+
+    private void getCurrentTime() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request.Builder()
+                                    .url(getCurrentTime_URL)
+                                    .build();
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Request request, IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(Response response) throws IOException {
+                        if (!response.isSuccessful()){
+                            new IOException("homeActivity/Unexpected code: "+response);
+                        }
+                        else {
+                            String result = response.body().string();
+                            try {
+                                JSONObject jsonObject = new JSONObject(result);
+                                String Time = jsonObject.getString("currentDateTime");
+                                final String currentTime = Time.substring(11,16);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(HomeActivity.this, currentTime, Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });
+            }
+        }).start();
     }
 
     private void getBusData_away() {
