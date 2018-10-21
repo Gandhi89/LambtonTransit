@@ -1,4 +1,4 @@
-package com.example.shivamgandhi.lambtontransit;
+package com.example.shivamgandhi.lambtontransit.screens;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.shivamgandhi.lambtontransit.R;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;

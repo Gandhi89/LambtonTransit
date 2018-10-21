@@ -1,4 +1,4 @@
-package com.example.shivamgandhi.lambtontransit;
+package com.example.shivamgandhi.lambtontransit.screens;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.shivamgandhi.lambtontransit.R;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -66,6 +67,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                         registerUser();
                         // assign score to user
                         assignScore();
+                        Intent intent = new Intent(SignUpActivity.this,HomeActivity.class);
+                        startActivity(intent);
                     }
                     else {
                         Toast.makeText(this, "Password and Confirm password dont match", Toast.LENGTH_SHORT).show();

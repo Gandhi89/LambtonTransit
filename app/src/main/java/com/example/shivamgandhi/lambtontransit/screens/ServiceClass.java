@@ -1,4 +1,4 @@
-package com.example.shivamgandhi.lambtontransit;
+package com.example.shivamgandhi.lambtontransit.screens;
 
 import android.util.Log;
 

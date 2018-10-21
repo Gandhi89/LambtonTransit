@@ -15,19 +15,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LogInActivity">
+        <activity android:name=".screens.LogInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".HomeScreenActivity"
-            android:label="@string/title_activity_home_screen"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".SignUpActivity" />
-        <activity android:name=".ForgotPassActivity"></activity>
+        <activity android:name=".screens.SignUpActivity" />
+        <activity android:name=".screens.ForgotPassActivity" />
+        <activity android:name=".screens.HomeActivity"></activity>
     </application>
 
 </manifest>

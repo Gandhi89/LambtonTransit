@@ -1,8 +1,6 @@
-package com.example.shivamgandhi.lambtontransit;
+package com.example.shivamgandhi.lambtontransit.screens;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,25 +10,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.shivamgandhi.lambtontransit.R;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 
 public class LogInActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -147,6 +137,8 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
                                           @Override
                                           public void run() {
                                               Toast.makeText(LogInActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+                                              Intent intent = new Intent(LogInActivity.this,HomeActivity.class);
+                                              startActivity(intent);
                                               studentID.setText("");
                                               password.setText("");
                                               return;
