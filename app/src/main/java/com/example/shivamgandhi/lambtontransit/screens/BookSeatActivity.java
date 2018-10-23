@@ -1,6 +1,8 @@
 package com.example.shivamgandhi.lambtontransit.screens;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -10,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.shivamgandhi.lambtontransit.R;
@@ -39,6 +42,7 @@ public class BookSeatActivity extends AppCompatActivity implements View.OnClickL
     private String cancelSeat_URL = "http://192.168.0.23/basic/cancelSeat.php";
     GridView gridView;
     Button bookCancelBtn;
+    ImageButton profile;
     int length,waiting;
     Utils mUtils;
     String userID,busID;
@@ -104,6 +108,7 @@ public class BookSeatActivity extends AppCompatActivity implements View.OnClickL
 
     private void setOnClickListner() {
         bookCancelBtn.setOnClickListener(this);
+        profile.setOnClickListener(this);
     }
 
     private void showProgressBar() {
@@ -177,7 +182,9 @@ public class BookSeatActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void initializeAll() {
-
+        android.support.v7.widget.Toolbar toolbar =  findViewById(R.id.bookSeat_toolbar);
+        setSupportActionBar(toolbar);
+        profile = findViewById(R.id.bookSeat_toolbar_btn);
         gridView = findViewById(R.id.bookSeatActivity_gridview);
         bookCancelBtn = findViewById(R.id.bookSeatActivity_button);
         mUtils = Utils.getInstance();
@@ -199,25 +206,52 @@ public class BookSeatActivity extends AppCompatActivity implements View.OnClickL
                     cancelMySeat();
                 }
                 break;
+            case R.id.bookSeat_toolbar_btn:
+                Toast.makeText(this, "profile clicked", Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 
     private void cancelMySeat() {
-        removeSeat();
-        updateScore();
-        showProgressBar();
-        new CountDownTimer(2000, 1000) {
+
+        showAlertDialog();
+    }
+
+    private void showAlertDialog() {
+        final AlertDialog.Builder builder1 = new AlertDialog.Builder(BookSeatActivity.this);
+        builder1.setMessage("Canceling seat will deduct your score. Do you want to cancel seat?");
+        builder1.setTitle("Message");
+        builder1.setCancelable(false);
+
+        builder1.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
-            public void onTick(long l) {
+            public void onClick(DialogInterface dialogInterface, int i) {
+                removeSeat();
+                updateScore();
+                showProgressBar();
+                new CountDownTimer(2000, 1000) {
+                    @Override
+                    public void onTick(long l) {
 
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        getDataFromServer();
+                    }
+                }.start();
             }
+        });
 
+        builder1.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
             @Override
-            public void onFinish() {
-                getDataFromServer();
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
             }
-        }.start();
+        });
 
+        AlertDialog alertDialog = builder1.create();
+        alertDialog.show();
     }
 
     private void removeSeat() {

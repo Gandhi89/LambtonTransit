@@ -26,5 +26,6 @@
     <style name="AnotherStyle">
         <item name="android:textColor">#FF255F26</item>
         <item name="android:textStyle">bold</item>
+
     </style>
 </resources>

@@ -1,6 +1,5 @@
 package com.example.shivamgandhi.lambtontransit.screens;
 
-import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,11 +32,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.Thread.interrupted;
-
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     Button toClgBtn,fromClgBtn;
+    ImageButton profile;
     ListView listView;
     Adapter_HA_displayBusList mAdapter_HA_displayBusList;
     List<String> busName;
@@ -45,6 +44,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private  String getCurrentTime_URL ="http://worldclockapi.com/api/json/est/now";
     private  String getBus_away_URL ="http://192.168.0.23/basic/bus_table_away.php";
     Handler handler;
+    android.support.v7.widget.Toolbar toolbar;
     private String current_time = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +74,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         fromClgBtn.setOnClickListener(this);
         listView.setOnItemClickListener(this);
         listView.setOnItemLongClickListener(this);
+        profile.setOnClickListener(this);
     }
 
     private void getBusData_towards() {
@@ -129,6 +130,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initializeAll() {
+        android.support.v7.widget.Toolbar toolbar =  findViewById(R.id.home_toolbar);
+        setSupportActionBar(toolbar);
+        profile = findViewById(R.id.home_toolbar_btn);
         listView = findViewById(R.id.homeActivity_listView);
         toClgBtn = findViewById(R.id.homeActivity_toClg);
         fromClgBtn = findViewById(R.id.homeActivity_fromClg);
@@ -151,6 +155,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 fromClgBtn.setBackgroundColor(Color.parseColor("#ffffff"));
                 getCurrentTime();
                 getBusData_towards();
+                break;
+            case R.id.home_toolbar_btn:
+                Toast.makeText(this, "profile clicked", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
