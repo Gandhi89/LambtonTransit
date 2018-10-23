@@ -46,7 +46,7 @@ public class Adapter_BS_gridView extends BaseAdapter {
         }
         if(i<Length){
             final Button btn = convertView.findViewById(R.id.adapter_Gridbutton);
-            btn.setBackgroundColor(Color.RED);
+            btn.setBackgroundColor(Color.parseColor("#303F9F"));
         }
         else {
             final Button btn = convertView.findViewById(R.id.adapter_Gridbutton);

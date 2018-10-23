@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#A76253"
     tools:context=".screens.BookSeatActivity">
 
     <LinearLayout
@@ -27,7 +28,8 @@
         android:id="@+id/bookSeatActivity_button"
         android:layout_width="match_parent"
         android:text="Book My Seat"
-        android:textColor="#000000"
+        android:background="@drawable/rounded_edittext"
+        android:textColor="#ffffff"
         android:layout_height="match_parent" />
     </LinearLayout>
 
