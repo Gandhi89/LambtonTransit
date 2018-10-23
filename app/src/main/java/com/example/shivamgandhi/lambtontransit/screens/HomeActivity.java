@@ -3,6 +3,7 @@ package com.example.shivamgandhi.lambtontransit.screens;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -33,16 +34,16 @@ import java.util.List;
 
 import static java.lang.Thread.interrupted;
 
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     Button toClgBtn,fromClgBtn;
     ListView listView;
     Adapter_HA_displayBusList mAdapter_HA_displayBusList;
     List<String> busName;
     List<String> busTiming;
-    private  String getBus_towards_URL ="http://192.168.0.21/basic/bus_table_towards.php";
+    private  String getBus_towards_URL ="http://192.168.0.23/basic/bus_table_towards.php";
     private  String getCurrentTime_URL ="http://worldclockapi.com/api/json/est/now";
-    private  String getBus_away_URL ="http://192.168.0.21/basic/bus_table_away.php";
+    private  String getBus_away_URL ="http://192.168.0.23/basic/bus_table_away.php";
     Handler handler;
     private String current_time = "";
     @Override
@@ -72,6 +73,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         toClgBtn.setOnClickListener(this);
         fromClgBtn.setOnClickListener(this);
         listView.setOnItemClickListener(this);
+        listView.setOnItemLongClickListener(this);
     }
 
     private void getBusData_towards() {
@@ -293,7 +295,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         TextView bTimeTv = view.findViewById(R.id.adapter_bustiming);
+        TextView bNameTv = view.findViewById(R.id.adapter_busname);
         String bTime = bTimeTv.getText().toString();
+        String bName = bNameTv.getText().toString();
 
         int busTimingInMinute = (Integer.parseInt(bTime.substring(0,2)) * 60) + Integer.parseInt(bTime.substring(3,5));
         int currentTimeInMinute = (Integer.parseInt(current_time.substring(0,2)) * 60) + Integer.parseInt(current_time.substring(3,5));
@@ -306,26 +310,62 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         if(difference > 0 && difference < 121)
         {
             Toast.makeText(this, "Yes", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(HomeActivity.this,BookSeatActivity.class);
+            intent.putExtra("busID",bName);
+            startActivity(intent);
+        }
+        else
+        {
+            showAlertDialog();
+
+        }
+
+    }
+
+    private void showAlertDialog() {
+        final AlertDialog.Builder builder1 = new AlertDialog.Builder(HomeActivity.this);
+        builder1.setMessage("You can only book your seat two hours before bus timing.");
+        builder1.setTitle("Error");
+        builder1.setCancelable(true);
+
+        builder1.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+            }
+        });
+
+        AlertDialog alertDialog = builder1.create();
+        alertDialog.show();
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+        TextView bTimeTv = view.findViewById(R.id.adapter_bustiming);
+        String bTime = bTimeTv.getText().toString();
+
+        int busTimingInMinute = (Integer.parseInt(bTime.substring(0,2)) * 60) + Integer.parseInt(bTime.substring(3,5));
+        int currentTimeInMinute = (Integer.parseInt(current_time.substring(0,2)) * 60) + Integer.parseInt(current_time.substring(3,5));
+
+        Log.d("adapter/busTiming",busTimingInMinute+"");
+        Log.d("adapter/currentTime",currentTimeInMinute+"");
+        int difference = busTimingInMinute - currentTimeInMinute;
+        Log.d("adapter/difference",difference+"");
+
+        if(difference > 0 && difference < 121)
+        {
+            //TODO:- Deal with UI for this portion
+            Toast.makeText(this, "Hell Yes", Toast.LENGTH_SHORT).show();
 
         }
         else
         {
-            final AlertDialog.Builder builder1 = new AlertDialog.Builder(HomeActivity.this);
-            builder1.setMessage("You can only book your seat two hours before bus timing.");
-            builder1.setTitle("Error");
-            builder1.setCancelable(true);
-
-            builder1.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.cancel();
-                }
-            });
-
-            AlertDialog alertDialog = builder1.create();
-            alertDialog.show();
+            showAlertDialog();
 
         }
 
+
+        return true;
     }
 }

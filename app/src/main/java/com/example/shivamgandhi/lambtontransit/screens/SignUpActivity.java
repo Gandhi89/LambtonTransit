@@ -26,8 +26,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     EditText studentIdEdt,passwordEdt,confirmPassEdt,pinEdt;
     Button signUpBtn;
     TextView alreadyRegisteredTxt;
-    private String signup_url = "http://192.168.0.21/basic/abc.php";
-    private String assignScore_url = "http://192.168.0.21/basic/assignScore.php";
+    private String signup_url = "http://192.168.0.23/basic/abc.php";
+    private String assignScore_url = "http://192.168.0.23/basic/assignScore.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

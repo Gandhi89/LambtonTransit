@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.shivamgandhi.lambtontransit.R;
+import com.example.shivamgandhi.lambtontransit.utils.Utils;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -28,8 +29,9 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
     TextView forgotPass;
     Button logIn,signUp;
     String Password,StudentID;
-    private String URL = "http://192.168.0.21/basic/user_info.php";
+    private String URL = "http://192.168.0.23/basic/user_info.php";
     boolean b = false;
+    Utils mUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,7 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         forgotPass = findViewById(R.id.loginActivity_forgotPass);
         logIn = findViewById(R.id.loginActivity_btn_login);
         signUp = findViewById(R.id.loginActivity_btn_signup);
+        mUtils = Utils.getInstance();
     }
 
     public void onClickListners(){
@@ -54,7 +57,6 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         logIn.setOnClickListener(this);
         signUp.setOnClickListener(this);
         forgotPass.setOnClickListener(this);
-
     }
 
     @Override
@@ -129,7 +131,7 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
                                   JSONObject obj = jsonArray.getJSONObject(i);
 
                                   // get student_id and pass for each object inside jsonArray
-                                  String student_id = obj.getString("student_id");
+                                  final String student_id = obj.getString("student_id");
                                   String pass = obj.getString("password");
 
                                   if(studentID.getText().toString().equals(student_id) && password.getText().toString().equals(pass)){
@@ -137,6 +139,7 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
                                           @Override
                                           public void run() {
                                               Toast.makeText(LogInActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+                                              mUtils.setUser_id(student_id);
                                               Intent intent = new Intent(LogInActivity.this,HomeActivity.class);
                                               startActivity(intent);
                                               studentID.setText("");

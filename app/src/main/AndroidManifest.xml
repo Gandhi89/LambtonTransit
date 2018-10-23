@@ -24,7 +24,8 @@
         </activity>
         <activity android:name=".screens.SignUpActivity" />
         <activity android:name=".screens.ForgotPassActivity" />
-        <activity android:name=".screens.HomeActivity"></activity>
+        <activity android:name=".screens.HomeActivity" />
+        <activity android:name=".screens.BookSeatActivity"></activity>
     </application>
 
 </manifest>

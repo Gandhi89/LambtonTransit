@@ -60,22 +60,6 @@ public class Adapter_HA_displayBusList extends BaseAdapter {
         tv1.setText(bus_name);
         tv2.setText(bus_timing);
 
-        //TODO:- write algorithm to calculate difference in timing
-        int busTimingInMinute = (Integer.parseInt(bus_timing.substring(0,2)) * 60) + Integer.parseInt(bus_timing.substring(3,5));
-        int currentTimeInMinute = (Integer.parseInt(currentTime.substring(0,2)) * 60) + Integer.parseInt(currentTime.substring(3,5));
-
-        Log.d("adapter/busTiming",busTimingInMinute+"");
-        Log.d("adapter/currentTime",currentTimeInMinute+"");
-        int difference = busTimingInMinute - currentTimeInMinute;
-        Log.d("adapter/difference",difference+"");
-
-        if(difference > 0 && difference < 121)
-        {
-            Log.d("adapter/","-----------------");
-            Log.d("adapter/busName",bus_name);
-
-        }
-
         return V;
 
     }

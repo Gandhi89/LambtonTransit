@@ -25,7 +25,7 @@ public class ForgotPassActivity extends AppCompatActivity implements View.OnClic
     EditText studentIdEdt,pinEdt;
     Button goBtn;
     TextView passwordEdt;
-    private String getPassword_URL = "http://192.168.0.21/basic/user_info.php";
+    private String getPassword_URL = "http://192.168.0.23/basic/user_info.php";
     boolean b = false;
 
     @Override
