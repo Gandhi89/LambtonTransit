@@ -34,6 +34,9 @@ public class BookSeatActivity extends AppCompatActivity implements View.OnClickL
 
     private String busStatus_URL = "http://192.168.0.23/basic/bus_info.php";
     private String bookSeat_URL = "http://192.168.0.23/basic/bookSeat.php";
+    private String userScore_URL = "http://192.168.0.23/basic/user_score.php";
+    private String updateScore_URL = "http://192.168.0.23/basic/updateScore.php";
+    private String cancelSeat_URL = "http://192.168.0.23/basic/cancelSeat.php";
     GridView gridView;
     Button bookCancelBtn;
     int length,waiting;
@@ -53,21 +56,51 @@ public class BookSeatActivity extends AppCompatActivity implements View.OnClickL
         busID = intent.getExtras().getString("busID");
         initializeAll();
         setOnClickListner();
+        // to see how many seats have been booked
         getDataFromServer();
-        new CountDownTimer(2000, 1000) {
-            @Override
-            public void onTick(long l) {
+        // to get user's score [used when user clicks 'cancel seat']
+        getUserScore();
 
-            }
-
-            @Override
-            public void onFinish() {
-                mAdapter_BS_gridView = new Adapter_BS_gridView(BookSeatActivity.this,length);
-                gridView.setAdapter(mAdapter_BS_gridView);
-            }
-        }.start();
 
     }// end of onCreate()
+
+    private void getUserScore() {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                            .url(userScore_URL)
+                            .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                new IOException("Unexpected code"+request.toString());
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                if (!response.isSuccessful()){
+                    Log.d("BookSeat/response",""+response);
+                }
+                else {
+                    String result = response.body().string();
+
+                    try {
+                        JSONArray jsonArray = new JSONArray(result);
+                        for (int i =0;i<jsonArray.length();i++){
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            String sID = jsonObject.getString("user_info");
+                            int score = Integer.parseInt(jsonObject.getString("score"));
+
+                            if (mUtils.getUser_id().equals(sID)){
+                                mUtils.setScore(score);
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
 
     private void setOnClickListner() {
         bookCancelBtn.setOnClickListener(this);
@@ -82,10 +115,11 @@ public class BookSeatActivity extends AppCompatActivity implements View.OnClickL
             public void run() {
                 progress.dismiss();
             }
-        }, 4000);
+        }, 2000);
     }
 
     private void getDataFromServer() {
+        b = false;
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                             .url(busStatus_URL)
@@ -123,6 +157,8 @@ public class BookSeatActivity extends AppCompatActivity implements View.OnClickL
                         @Override
                         public void run() {
                             bookCancelBtn.setText(cancel);
+                            mAdapter_BS_gridView = new Adapter_BS_gridView(BookSeatActivity.this,length);
+                            gridView.setAdapter(mAdapter_BS_gridView);
                         }
                     });
                 }
@@ -131,6 +167,8 @@ public class BookSeatActivity extends AppCompatActivity implements View.OnClickL
                         @Override
                         public void run() {
                             bookCancelBtn.setText(book);
+                            mAdapter_BS_gridView = new Adapter_BS_gridView(BookSeatActivity.this,length);
+                            gridView.setAdapter(mAdapter_BS_gridView);
                         }
                     });
                 }
@@ -165,7 +203,83 @@ public class BookSeatActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void cancelMySeat() {
-        bookCancelBtn.setText(book);
+        removeSeat();
+        updateScore();
+        showProgressBar();
+        new CountDownTimer(2000, 1000) {
+            @Override
+            public void onTick(long l) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                getDataFromServer();
+            }
+        }.start();
+
+    }
+
+    private void removeSeat() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                OkHttpClient okHttpClient = new OkHttpClient();
+                MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+                String data = null;
+                try {
+                    data = URLEncoder.encode("student_id","UTF-8")+ "=" + URLEncoder.encode(mUtils.getUser_id(),"UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                RequestBody requestBody = RequestBody.create(mediaType,data);
+                Request request = new Request.Builder()
+                        .url(cancelSeat_URL)
+                        .post(requestBody)
+                        .build();
+                try {
+                    Response response = okHttpClient.newCall(request).execute();
+                    String result = response.body().string();
+                    Log.d("BookSeat/CS_response",result);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private void updateScore() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                int newScore = mUtils.getScore() / 2;
+                mUtils.setScore(newScore);
+
+                OkHttpClient okHttpClient = new OkHttpClient();
+                MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+                String data = null;
+                try {
+                    data = URLEncoder.encode("user_info","UTF-8")+ "=" + URLEncoder.encode(mUtils.getUser_id(),"UTF-8");
+                    data += "&" + URLEncoder.encode("score","UTF-8")+ "=" + URLEncoder.encode(String.valueOf(mUtils.getScore()),"UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                RequestBody requestBody = RequestBody.create(mediaType,data);
+                Request request = new Request.Builder()
+                        .url(updateScore_URL)
+                        .post(requestBody)
+                        .build();
+                try {
+                    Response response = okHttpClient.newCall(request).execute();
+                    String result = response.body().string();
+                    Log.d("BookSeat/US_response",result);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     private void bookMySeat() {

@@ -8,7 +8,21 @@ public class Utils {
         return singleton;
     }
 
+    ////////
+
     private String user_id = "";
+
+    private int score = 0;
+
+    /////////
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
 
     public String getUser_id() {
         return user_id;
