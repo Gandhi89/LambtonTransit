@@ -1,6 +1,7 @@
 package com.example.shivamgandhi.lambtontransit.screens;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.shivamgandhi.lambtontransit.R;
@@ -47,7 +49,7 @@ public class BookSeatActivity extends AppCompatActivity implements View.OnClickL
     Utils mUtils;
     String userID,busID;
     Boolean b;
-    String book,cancel;
+    String book,cancel,Score;
     Adapter_BS_gridView mAdapter_BS_gridView;
 
 
@@ -207,8 +209,31 @@ public class BookSeatActivity extends AppCompatActivity implements View.OnClickL
                 }
                 break;
             case R.id.bookSeat_toolbar_btn:
-                Toast.makeText(this, "profile clicked", Toast.LENGTH_SHORT).show();
+
+                showProgressBar();
+                getUserScore();
+                new CountDownTimer(2000, 1000) {
+                    @Override
+                    public void onTick(long l) {
+
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        Dialog dialog = new Dialog(BookSeatActivity.this);
+                        dialog.setContentView(R.layout.show_profile);
+                        dialog.show();
+
+                        TextView userId = dialog.findViewById(R.id.tv_studentID);
+                        TextView userScore = dialog.findViewById(R.id.tv_score);
+
+                        userId.setText(mUtils.getUser_id());
+                        Score = String.valueOf(mUtils.getScore());
+                        userScore.setText(Score);
+                    }
+                }.start();
                 break;
+
         }
     }
 

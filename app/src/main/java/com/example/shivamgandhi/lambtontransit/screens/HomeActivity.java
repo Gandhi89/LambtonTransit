@@ -1,9 +1,12 @@
 package com.example.shivamgandhi.lambtontransit.screens;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +22,7 @@ import android.widget.Toast;
 
 import com.example.shivamgandhi.lambtontransit.R;
 import com.example.shivamgandhi.lambtontransit.adapter.Adapter_HA_displayBusList;
+import com.example.shivamgandhi.lambtontransit.utils.Utils;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -43,9 +47,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private  String getBus_towards_URL ="http://192.168.0.23/basic/bus_table_towards.php";
     private  String getCurrentTime_URL ="http://worldclockapi.com/api/json/est/now";
     private  String getBus_away_URL ="http://192.168.0.23/basic/bus_table_away.php";
+    private String userScore_URL = "http://192.168.0.23/basic/user_score.php";
     Handler handler;
     android.support.v7.widget.Toolbar toolbar;
     private String current_time = "";
+    Utils mUtils;
+    String Score;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +61,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         initializeAll();
         onClickEvent();
         getCurrentTime();
+        getUserScore();
         new CountDownTimer(2000, 1000) {
             @Override
             public void onTick(long l) {
@@ -68,6 +76,45 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }.start();
 
     }// end of onCreate()
+
+    private void getUserScore() {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(userScore_URL)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                new IOException("Unexpected code"+request.toString());
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                if (!response.isSuccessful()){
+                    Log.d("BookSeat/response",""+response);
+                }
+                else {
+                    String result = response.body().string();
+
+                    try {
+                        JSONArray jsonArray = new JSONArray(result);
+                        for (int i =0;i<jsonArray.length();i++){
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            String sID = jsonObject.getString("user_info");
+                            int score = Integer.parseInt(jsonObject.getString("score"));
+
+                            if (mUtils.getUser_id().equals(sID)){
+                                mUtils.setScore(score);
+                                Score = String.valueOf(score);
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
 
     private void onClickEvent() {
         toClgBtn.setOnClickListener(this);
@@ -138,28 +185,67 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         fromClgBtn = findViewById(R.id.homeActivity_fromClg);
         busName = new ArrayList<>();
         busTiming = new ArrayList<>();
-
+        mUtils = Utils.getInstance();
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.homeActivity_fromClg:
+
                 fromClgBtn.setBackgroundColor(Color.parseColor("#A76253"));
                 toClgBtn.setBackgroundColor(Color.parseColor("#ffffff"));
                 getCurrentTime();
                 getBusData_away();
                 break;
             case R.id.homeActivity_toClg:
+
                 toClgBtn.setBackgroundColor(Color.parseColor("#A76253"));
                 fromClgBtn.setBackgroundColor(Color.parseColor("#ffffff"));
                 getCurrentTime();
                 getBusData_towards();
                 break;
             case R.id.home_toolbar_btn:
-                Toast.makeText(this, "profile clicked", Toast.LENGTH_SHORT).show();
+
+                showProgressBar();
+                getUserScore();
+                new CountDownTimer(2000, 1000) {
+                    @Override
+                    public void onTick(long l) {
+
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        Dialog dialog = new Dialog(HomeActivity.this);
+                        dialog.setContentView(R.layout.show_profile);
+                        dialog.show();
+
+                        TextView userId = dialog.findViewById(R.id.tv_studentID);
+                        TextView userScore = dialog.findViewById(R.id.tv_score);
+
+                        userId.setText(mUtils.getUser_id());
+                        Score = String.valueOf(mUtils.getScore());
+                        userScore.setText(Score);
+                    }
+                }.start();
+
+
                 break;
         }
+    }
+
+    private void showProgressBar() {
+
+        final ProgressDialog progress = new ProgressDialog(this);
+        progress.show();
+        progress.setCancelable(false);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                progress.dismiss();
+            }
+        }, 2000);
     }
 
     private void getCurrentTime() {
