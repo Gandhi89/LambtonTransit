@@ -11,6 +11,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.shivamgandhi.lambtontransit.R;
+import com.example.shivamgandhi.lambtontransit.utils.Utils;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -28,6 +30,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     TextView alreadyRegisteredTxt;
     private String signup_url = "http://192.168.0.23/basic/abc.php";
     private String assignScore_url = "http://192.168.0.23/basic/assignScore.php";
+    Utils mUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +38,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_sign_up);
         initializeAll();
         onClickEvent();
+
     }// end of onCreate()
 
     private void onClickEvent() {
@@ -49,6 +53,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         pinEdt = findViewById(R.id.signup_pin);
         signUpBtn = findViewById(R.id.signup_signupBtn);
         alreadyRegisteredTxt = findViewById(R.id.signup_alreadyRegister);
+        mUtils = Utils.getInstance();
+
     }
 
     @Override
@@ -67,6 +73,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                         registerUser();
                         // assign score to user
                         assignScore();
+                        mUtils.setUser_id(studentIdEdt.getText().toString());
+                        mUtils.setScore(300);
                         Intent intent = new Intent(SignUpActivity.this,HomeActivity.class);
                         startActivity(intent);
                     }

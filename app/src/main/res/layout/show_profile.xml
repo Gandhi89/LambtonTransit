@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+    android:layout_width="320dp"
     android:layout_height="120dp"
     android:background="#3E80B4"
     android:orientation="vertical" >
 
     <LinearLayout
         android:layout_marginTop="20dp"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="#3E80B4"
+        android:layout_weight="2"
         android:orientation="horizontal" >
 
         <TextView
+            android:layout_weight="1"
             android:id="@+id/tv_student"
-            android:layout_width="100dp"
+            android:layout_width="match_parent"
             android:layout_height="30dp"
             android:text="StudentID :"
             android:gravity="end"
@@ -23,8 +25,9 @@
             android:textStyle="bold" />
 
         <TextView
+            android:layout_weight="1"
             android:id="@+id/tv_studentID"
-            android:layout_width="100dp"
+            android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_marginLeft="5dp"
             android:text="studentName"
@@ -35,15 +38,17 @@
 
     <LinearLayout
         android:layout_marginTop="10dp"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="#3E80B4"
+        android:layout_weight="2"
         android:orientation="horizontal" >
 
         <TextView
+            android:layout_weight="1"
             android:id="@+id/tv_s"
-            android:layout_width="100dp"
+            android:layout_width="match_parent"
             android:layout_height="30dp"
             android:text="Score : "
             android:gravity="end"
@@ -51,8 +56,9 @@
             android:textStyle="bold" />
 
         <TextView
+            android:layout_weight="1"
             android:id="@+id/tv_score"
-            android:layout_width="100dp"
+            android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_marginLeft="5dp"
             android:clickable="true"

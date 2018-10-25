@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.example.shivamgandhi.lambtontransit.R;
 import com.example.shivamgandhi.lambtontransit.adapter.Adapter_HA_displayBusList;
 import com.example.shivamgandhi.lambtontransit.utils.Utils;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -53,6 +54,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private String current_time = "";
     Utils mUtils;
     String Score;
+    private ShimmerFrameLayout mShimmerViewContainer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +65,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         onClickEvent();
         getCurrentTime();
         getUserScore();
+        mShimmerViewContainer.startShimmerAnimation();
         new CountDownTimer(2000, 1000) {
             @Override
             public void onTick(long l) {
@@ -161,6 +165,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
+                                        mShimmerViewContainer.stopShimmerAnimation();
+                                        mShimmerViewContainer.setVisibility(View.GONE);
                                         mAdapter_HA_displayBusList = new Adapter_HA_displayBusList(HomeActivity.this,busName,busTiming,current_time);
                                         listView.setAdapter(mAdapter_HA_displayBusList);
                                     }
@@ -186,6 +192,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         busName = new ArrayList<>();
         busTiming = new ArrayList<>();
         mUtils = Utils.getInstance();
+        mShimmerViewContainer = findViewById(R.id.shimmer_view_container);
     }
 
     @Override
