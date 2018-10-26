@@ -14,4 +14,4 @@ Library -> OkHTTP,Shimmer.
 
 # Demo of Application
 
-![Alt Text](https://github.com/Gandhi89/LambtonTransit/blob/master/LambtonTransitGif.gif)
+![Alt Text](https://github.com/Gandhi89/LambtonTransit/blob/master/LambtonTransitDemoGif.gif)
