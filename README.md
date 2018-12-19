@@ -7,11 +7,14 @@ OkHTTP is used.
 
 # Software and Programming Languages 
 
-web server -> XAMP.
-programming languages -> PHP,java,SQL.
-ORM -> Redbean.
-Library -> OkHTTP,Shimmer.
+`web server`  XAMP
 
-# Demo of Application
+`programming languages` PHP, Java, SQL
+
+`ORM` Redbean.
+
+`Library` OkHTTP, Shimmer
+
+# Demo 
 
 ![Alt Text](https://github.com/Gandhi89/LambtonTransit/blob/master/LambtonTransitDemoGif.gif)
